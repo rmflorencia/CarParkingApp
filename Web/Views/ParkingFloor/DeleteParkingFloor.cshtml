@@ -1,0 +1,8 @@
+﻿<form asp-action="DeleteParkingFloor" role="form">
+    @Html.Partial("_ModalHeader", new ModalHeader { Heading = "Delete Parking Floor" })
+
+    <div class="modal-body form-horizontal">
+        Are you sure you want to delete Parking Floor @Model?
+    </div>
+    @Html.Partial("_ModalFooter", new ModalFooter { SubmitButtonText = "Delete" })
+</form>

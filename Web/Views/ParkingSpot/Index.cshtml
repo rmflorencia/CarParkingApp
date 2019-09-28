@@ -1,0 +1,59 @@
+﻿@model IEnumerable<ParkingSpotViewModel>
+@using Web.Models
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="AddParkingSpot">New Parking Spot</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                Parking Floor Number
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Vehicle)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ParkingFloorId)
+            </td>
+            @{
+                @if (item.Vehicle != null)
+        {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Vehicle.LicensePlate)
+                        @{
+                            var vehicleInformation = "-" + item.Vehicle.Brand + " " + item.Vehicle.Model;
+                            @Html.DisplayFor(m => vehicleInformation)
+                        }
+                    </td>
+                }
+                else
+                {
+                    <td class="green">Vacant</td>
+                }
+            }
+                <td>
+                    <a asp-action="DeleteParkingSpot" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

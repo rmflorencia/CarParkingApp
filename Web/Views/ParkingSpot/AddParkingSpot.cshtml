@@ -1,0 +1,21 @@
+﻿@model ParkingSpotViewModel
+@using Web.Models
+
+<form asp-action="AddParkingSpot" role="form">
+    @await Html.PartialAsync("_ModalHeader", new ModalHeader { Heading = "Add Parking Spot" })
+    <div class="modal-body form-horizontal">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label asp-for="ParkingFloorId" class="col-lg-3 col-sm-3 control-label">Parking Floor Number</label>
+                    <div class="col-lg-6">
+                        <input asp-for="ParkingFloorId" class="form-control" />
+                    </div>
+                </div>                
+            </div>           
+        </div>
+    </div>
+    @await Html.PartialAsync("_ModalFooter", new ModalFooter { })
+</form>
+
+
