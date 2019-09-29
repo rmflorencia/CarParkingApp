@@ -12,12 +12,14 @@ namespace Web.Controllers
     public class ParkingSpotController : Controller
     {
         private readonly IParkingSpotService parkingSpotService;
+        private readonly IParkingFloorService parkingFloorService;
         private readonly IVehicleService vehicleService;
 
-        public ParkingSpotController(IParkingSpotService parkingSpotService, IVehicleService vehicleService)
+        public ParkingSpotController(IParkingSpotService parkingSpotService, IVehicleService vehicleService, IParkingFloorService parkingFloorService)
         {
             this.parkingSpotService = parkingSpotService;
             this.vehicleService = vehicleService;
+            this.parkingFloorService = parkingFloorService;
         }
 
         [HttpGet]
@@ -36,6 +38,9 @@ namespace Web.Controllers
                 model.Add(parkingSpot);
             });
 
+            if (TempData["NoFloorMessage"] != null)
+                ViewBag.NoFloorMessage = TempData["NoFloorMessage"].ToString();
+
             return View(model);
         }
 
@@ -50,19 +55,29 @@ namespace Web.Controllers
         [HttpPost]
         public ActionResult AddParkingSpot(ParkingSpotViewModel model)
         {
-            ParkingSpot parkingSpotEntity = new ParkingSpot
-            {
-                AddedDate = DateTime.UtcNow,
-                ModifiedDate = DateTime.UtcNow,
-                ParkingFloorId = model.ParkingFloorId
-            };
+            var parkingFloor = parkingFloorService.Get(model.ParkingFloorId);
 
-            parkingSpotService.InsertParkingSpot(parkingSpotEntity);
-            if (parkingSpotEntity.Id > 0)
+            if (parkingFloor != null)
             {
-                return RedirectToAction("index");
+                ParkingSpot parkingSpotEntity = new ParkingSpot
+                {
+                    AddedDate = DateTime.UtcNow,
+                    ModifiedDate = DateTime.UtcNow,
+                    ParkingFloorId = model.ParkingFloorId
+                };
+
+                parkingSpotService.InsertParkingSpot(parkingSpotEntity);
+                if (parkingSpotEntity.Id > 0)
+                {
+                    return RedirectToAction("index");
+                }
+                return View(model);
             }
-            return View(model);
+            else
+            {
+                TempData["NoFloorMessage"] = "The Floor does not exist";
+                return RedirectToAction("Index");
+            }
         }
        
         [HttpGet]
